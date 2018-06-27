@@ -1,17 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const colors = [{ name: 'Red', count: 2 }, { name: 'Yellow', count: 4 }];
+let colors = [];
 
-// Get all the colors
+
+//GET all the colors
 router.get('/', (req, res) => {
     res.send(colors);
 });
 
-// Add a new color object
+//ad a new color object to the array (req.body)
 router.post('/', (req, res) => {
     console.log(req.body);
     colors.push(req.body);
     res.sendStatus(201);
 });
+
+router.delete('/', (req, res)=>{
+    // const queryString = 'DELETE FROM colors WHERE id'
+    colors = [];
+    res.sendStatus(200);
+})
+
 
 module.exports = router;

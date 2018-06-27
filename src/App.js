@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
 import ColorList from './ColorList/ColorList';
@@ -14,49 +13,64 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      color: ''
+      color: '',
+      count: 0
     }
   }
 
   handleColorChange = (event) => {
     this.setState({
       color: event.target.value
+    
+    })
+  }
+//TODO: rename to sendColorToServer
+  sendColorToRedux = () => {
+    // Send the color to redux with an action type of ADD_COLOR
+    // 
+    const body = {name: this.state.color, count: this.props.reduxStore.counterReducer};
+    axios.post('/api/colors', body)
+    .then((response)=>{
+      this.refreshData();
+
+    }).catch((error)=>{
+      console.log('Error in POST', error);
     })
   }
 
-  // TODO: Rename to sendColorToServer
-  sendColorToRedux = () => {
-    // Send the color to redux with an action type of ADD_COLOR
-    // const action = {type: 'ADD_COLOR', payload: this.state.color};
-    // this.props.dispatch(action);
-    const body = {name: this.state.color, count: 1};
-    axios.post('/api/colors', body).then((response) => {
-      this.refreshData();
-    }).catch((error) => {
-      console.log(error);
-      alert('Something went wrong.');
-    });
-  }
-
   deleteAllColors = () => {
-    const action = {type: 'DELETE_COLORS'};
+    axios.delete('api/colors').then((response)=>{
+      console.log('in axios.delete', response);
+      this.refreshData();
+    }).catch((error)=>{
+      console.log('Error in axios.delete', error);
+      alert('Call your mommy');
+    })
+    
+  }
+
+  deleteOneColor = () =>{
+console.log('in deleteOneColor()');
+
+  }
+refreshData() {
+  axios.get('/api/colors').then((response)=>{
+    console.log(response.data);
+    const action = {type: 'SET_COLORS', payload: response.data};
     this.props.dispatch(action);
-  }
 
-  refreshData() {
-    axios.get('/api/colors').then((response) => {
-      console.log(response.data);
-      const action = { type: 'SET_COLORS', payload: response.data };
-      this.props.dispatch(action);
-    }).catch((error) => {
-      console.log(error);
-      alert('Something went wrong');
-    });
-  }
+  }).catch((error)=>{
+    console.log('error in get call your mom', error)
+    alert('You better call your mommy')
+  })
 
+}
   componentDidMount() {
+
     this.refreshData();
+  
   }
+  
 
   render() {
     console.log('Rendering App.js');
@@ -73,6 +87,7 @@ class App extends Component {
         <h3>Enter Color Here:</h3>
         <input onChange={this.handleColorChange} value={this.state.color} />
         <button onClick={this.sendColorToRedux}>Submit</button>
+        <button onClick={this.deleteOneColor}></button>
         <button onClick={this.deleteAllColors}>Delete ALL Colors</button>
         <ColorList />
         
