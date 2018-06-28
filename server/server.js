@@ -2,22 +2,26 @@ const express = require('express');
 const app = express();
 const pool = require('./modules/pool');
 const bodyParser = require('body-parser');
-const messages = require('./routes/messaging.router');
+
 // Route includes
 const colorRouter = require('./routes/color.router');
-
-//uses
-app.use(express.static('server/public'));
-app.use(bodyParser.json());
+app.use(express.static('build'));
 /* Routes */
 app.use('/api/colors', colorRouter);
-app.use(express.static('build'));
+//uses
+// app.use(express.static('server/public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
+
+
 
 
 //port
-const port = process.env.PORT || 5000;
-app.listen(port, function() {
-    console.log(`listening on PORT`, port);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, function() {
+    console.log(`listening on PORT`, PORT);
 });
 
 

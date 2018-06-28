@@ -1,7 +1,7 @@
 const pg = require('pg');
 const Pool = pg.Pool;
 
-const DATABASE_NAME = 'message_board';
+const DATABASE_NAME = 'color_counter';
 const config = {
     database: DATABASE_NAME, // the name of the db to connect to
     host: 'localhost', // where the db is located
